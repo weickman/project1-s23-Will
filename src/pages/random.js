@@ -8,7 +8,7 @@ const fetcher = async (url) => {
 }
 
 export default function Random() {
-    const { data, error, isLoading, isValidating } = useSWR("/api/", fetcher)
+    const { data, error, isLoading, isValidating } = useSWR("/api/rand", fetcher)
     if (isLoading) return <div>Loading</div>
     if (!data) return (
         <>
@@ -17,6 +17,7 @@ export default function Random() {
         </>
     )
     let { name, sprite, types } = data
+    console.log(sprite)
 
 
     return (

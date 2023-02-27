@@ -1,6 +1,8 @@
 import axios from 'axios'
 import useSWR from 'swr'
 import Link from 'next/link'
+import { useState } from 'react'
+import { useRef } from 'react'
 
 const fetcher = async (url) => {
     const res = await axios.post(url, {
@@ -8,19 +10,31 @@ const fetcher = async (url) => {
     })
     return res.data
 }
-
 export default function Battle() {
-    const name = "pikachu"
-    const { data, error, isLoading, isValidating } = useSWR(`/api/catch/`, fetcher)
+    const inputRef = useRef(null)
+    const [name, setName] = useState('');
+    function setUrl(){
+        let url = "/api/catch/" + name;
+        console.log(url)
+        return url;
+    }
+    const handleChange = () => {
+        setName(inputRef.current.value);
+      };
+    const { data, error, isLoading, isValidating } = useSWR(setUrl(), fetcher)
     if (isLoading) return <div>Loading</div>
     if (!data) return (
         <>
             <Link href="/"><h1>Better PokeAPI</h1></Link>
-            <h2>Must Implement your API. Data is empty</h2>
+            <form onSubmit={handleChange}>
+                        <label for="name">Enter Pokemon Name: </label>
+                        <input type="text" id="name" ref={inputRef}/>
+                        <button type="submit" id="submit" >Submit</button>
+            </form>
         </>
     )
     let { caught } = data
-
+    console.log(caught)
     return (
         <>
             <Link href="/"><h1>Better PokeAPI</h1></Link>
